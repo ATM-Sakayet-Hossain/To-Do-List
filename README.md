@@ -1,76 +1,59 @@
-To-Do List App
-A simple and efficient To-Do List application built with React and Vite. This app allows users to manage their daily tasks effectively.
-GitHub
 
-Features
-Add new tasks to your to-do list.
+# To-Do List App
 
-Mark tasks as completed.
+A simple and efficient To-Do List application built with React and Vite.
+This app allows users to manage their daily tasks effectively.
 
-Delete tasks that are no longer needed.
+## Features
 
-Responsive design for both desktop and mobile devices.
+- Add new tasks to your to-do list.
+- Mark tasks as completed.
+- Delete tasks that are no longer needed.
+- Responsive design for both desktop and mobile devices.
+- Real-time updates with fast performance.
 
-Real-time updates with fast performance.
-GitHub
-+2
-GitHub
-+2
-GitHub
-+2
+## Technologies Used
 
-Technologies Used
-React
+- React
+- Vite
+- JavaScript (ES6+)
+- HTML5 & CSS3
 
-Vite
+## Installation
 
-JavaScript (ES6+)
+1. **Clone the repository:**
 
-HTML5 & CSS3
-Medium
-+1
-GitHub
-+1
-GitHub
-+1
-GitHub
-+1
+   ```bash
+   git clone https://github.com/ATM-Sakayet-Hossain/To-Do-List.git
+   ```
 
-Installation
-Clone the repository:
+2. **Navigate to the project directory:**
 
-bash
-কপি করুন
-এডিট করুন
-git clone https://github.com/ATM-Sakayet-Hossain/To-Do-List.git
-Navigate to the project directory:
+   ```bash
+   cd To-Do-List
+   ```
 
-bash
-কপি করুন
-এডিট করুন
-cd To-Do-List
-Install the dependencies:
+3. **Install the dependencies:**
 
-bash
-কপি করুন
-এডিট করুন
-npm install
-Start the development server:
+   ```bash
+   npm install
+   ```
 
-bash
-কপি করুন
-এডিট করুন
-npm run dev
-Open your browser and visit:
+4. **Start the development server:**
 
-arduino
-কপি করুন
-এডিট করুন
-http://localhost:5173
-Project Structure
-plaintext
-কপি করুন
-এডিট করুন
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser and visit:**
+
+   ```
+   http://localhost:5173
+   ```
+
+## Project Structure
+
+```
 To-Do-List/
 ├── public/
 ├── src/
@@ -80,20 +63,18 @@ To-Do-List/
 ├── index.html
 ├── package.json
 └── vite.config.js
-Contributing
+```
+
+## Contributing
+
 Contributions are welcome! Please follow these steps:
-GitHub
 
-Fork the repository.
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature-name`.
+3. Make your changes and commit them: `git commit -m 'Add new feature'`.
+4. Push to the branch: `git push origin feature-name`.
+5. Open a pull request.
 
-Create a new branch: git checkout -b feature-name.
+## License
 
-Make your changes and commit them: git commit -m 'Add new feature'.
-
-Push to the branch: git push origin feature-name.
-
-Open a pull request.
-GitHub
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
