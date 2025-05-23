@@ -4,12 +4,12 @@ import { getDatabase } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCD0Av9-fb-JNYFQnbrkkeqUUALFhk1Qpg",
-  authDomain: "todo-f01b8.firebaseapp.com",
-  projectId: "todo-f01b8",
-  storageBucket: "todo-f01b8.firebasestorage.app",
-  messagingSenderId: "701284472651",
-  appId: "1:701284472651:web:1427a1ff23c3e4ca74face"
+  apiKey: "AIzaSyBTHXsaryG3OyxKA5_9RMlve7xO0EcOqqg",
+  authDomain: "todolist-c89f2.firebaseapp.com",
+  projectId: "todolist-c89f2",
+  storageBucket: "todolist-c89f2.firebasestorage.app",
+  messagingSenderId: "583766210101",
+  appId: "1:583766210101:web:17b814a70fcd28bd97637c"
 };
 
 // Initialize Firebase

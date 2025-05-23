@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import { FaRegCheckCircle } from "react-icons/fa";
 
 const Form = () => {
-  // const [task, setTask] = useState("");
-  // const [deadline, setDeadline] = useState("");
-  // const [status, setStatus] = useState("");
-  // const [note, setNote] = useState("");
-  // const [todos, setTodos] = useState([]);
+  const db = getDatabase();
+  const [description, setDescription] = useState("")
+  const [deadline, setDeadline] = useState("");
+  const [status, setStatus] = useState("");
+  const [note, setNote] = useState("");
+  const [toDoList, setToDoList] = useState([]);
+
+  const handelSubmit = () => {
+    set(push(ref(db, "toDoList/")), {
+      descriptionItem: description,
+      deadlineDate: deadline,
+      statusItem: status,
+      noteItem: note,
+    });
+    setDescription("");
+    setDeadline("");
+    setStatus("");
+    setNote("");
+   };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center pt-20 bg-white">
@@ -29,6 +45,7 @@ const Form = () => {
                   </p>
                   <input
                     type="text"
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="Task Description"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -37,6 +54,7 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Deadline</p>
                   <input
                     type="date"
+                    onChange={(e) => setDeadline(e.target.value)}
                     placeholder="Deadline"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -47,6 +65,7 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Status</p>
                   <select
                     id="task-status"
+                    onChange={(e) => setStatus(e.target.value)}
                     name="task-status"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
@@ -60,13 +79,14 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Notes</p>
                   <input
                     type="text"
+                    onChange={(e) => setNote(e.target.value)}
                     placeholder="Notes"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
             </div>
-            <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3">
+            <button onClick={handelSubmit} className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3">
               Add
             </button>
           </form>
