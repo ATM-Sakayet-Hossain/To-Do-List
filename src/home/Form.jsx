@@ -4,13 +4,39 @@ import { FaRegCheckCircle } from "react-icons/fa";
 
 const Form = () => {
   const db = getDatabase();
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [status, setStatus] = useState("");
   const [note, setNote] = useState("");
   const [toDoList, setToDoList] = useState([]);
 
-  const handelSubmit = () => {
+  const handelSubmit = (e) => {
+    e.preventDefault();
+    if (!description) {
+      alert(
+        "তুমি শুধু টাইটেল দাও, বাকি গল্পটা কোথায়? এমন করলে তো কাজের বায়োডাটা নয়, ইনস্টাগ্রাম ক্যাপশন মনে হয়!"
+      );
+      return;
+    } else if (!deadline) {
+      alert(
+        "ভাই, ডেডলাইন ছাড়া টাস্ক মানে প্রেমের প্রমিস — আজ না কাল, কাল না পরশু!"
+      );
+      return;
+    } else if (!status) {
+      alert(
+        "তোমার স্ট্যাটাস না থাকায় মনটা বলতেছে — হয়তো করবা, হয়তো করবা না, হয়তো করেও ফেলছো... কে জানে!"
+      );
+      return;
+    } else if (!note) {
+      alert(
+        "তোমার এই কাজ দেখে মনে হচ্ছে গোপন মিশনে আছো, নোট দিলেই বুঝি মিশন ফেইল!"
+      );
+      return;
+    } else {
+      alert(
+        "তুমি সাবমিট করছো, এখন প্রার্থনা করো যেন এটা কাউকে রিভিউ করতে না হয়!"
+      );
+    }
     set(push(ref(db, "toDoList/")), {
       descriptionItem: description,
       deadlineDate: deadline,
@@ -21,7 +47,17 @@ const Form = () => {
     setDeadline("");
     setStatus("");
     setNote("");
-   };
+  };
+
+  useEffect(() => {
+    onValue(ref(db, "toDoList/"), (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        arr.push({ ...item.val(), id: item.key });
+      });
+      setToDoList(arr);
+    });
+  }, []);
 
   return (
     <>
@@ -36,17 +72,18 @@ const Form = () => {
           <p className="text-center text-gray-500 mt-2">
             Keep track of your tasks and stay organized!
           </p>
-          <form className="flex flex-col items-center justify-center mt-5">
+          <form onSubmit={handelSubmit} className="flex flex-col items-center justify-center mt-5">
             <div className="w-full flex flex-col gap-4">
               <div className="w-full flex items-center justify-between gap-4">
                 <div className="w-1/2">
                   <p className="text-center font-semibold text-xl">
-                    Task Description
+                    Project Description
                   </p>
                   <input
                     type="text"
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Task Description"
+                    value={description}
+                    placeholder="Project Description"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
@@ -55,6 +92,7 @@ const Form = () => {
                   <input
                     type="date"
                     onChange={(e) => setDeadline(e.target.value)}
+                    value={deadline}
                     placeholder="Deadline"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -66,6 +104,7 @@ const Form = () => {
                   <select
                     id="task-status"
                     onChange={(e) => setStatus(e.target.value)}
+                    value={status}
                     name="task-status"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
@@ -80,49 +119,63 @@ const Form = () => {
                   <input
                     type="text"
                     onChange={(e) => setNote(e.target.value)}
+                    value={note}
                     placeholder="Notes"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
             </div>
-            <button onClick={handelSubmit} className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3">
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+            >
               Add
             </button>
           </form>
         </div>
       </div>
       {/* table data  */}
-      {/* <div className="flex items-center justify-center pt-10">
-        <h2 className="text-2xl font-bold text-blue-300 mb-4">
-          Your Tasks
-        </h2>
-      </div> */}
-      <div className="w-300 bg-white pt-5 rounded-2xl m-auto">
-        <table className="w-full table-auto border-collapse rounded-xl overflow-hidden shadow-md">
-          <thead className="bg-gray-100 text-gray-600 text-left text-base font-semibold">
-            <tr>
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">Task Description</th>
-              <th className="px-4 py-3">Deadline</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Notes</th>
-            </tr>
-          </thead>
-          {/* Table body */}
-          {/* Add your table rows here */}
-          <tbody className="text-gray-700 text-sm md:text-base">
-            <tr className="border-t">
-              <td className="px-4 py-3">#01</td>
-              <td className="px-4 py-3">Hello</td>
-              <td className="px-4 py-3">25-05-2025</td>
-              <td className="px-4 py-3 text-yellow-500 font-medium">
-                In Progress
-              </td>
-              <td className="px-4 py-3 text-gray-400">N/A</td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="flex items-center justify-center pt-10">
+        <button className="text-2xl font-bold text-blue-300 mb-4">
+          Your To-Do List
+        </button>
+      </div>
+      <div className="w-300 bg-white mt-5 m-auto">
+        <div className="overflow-x-auto rounded-2xl outline-1 outline-blue-400">
+          <table className="min-w-full table-fixed">
+            <thead className="bg-gray-100 text-gray-600 text-left text-base font-semibold sticky top-0 z-10">
+              <tr>
+                <th className="px-4 py-3 w-10">#</th>
+                <th className="px-4 py-3 w-1/4">Project Description</th>
+                <th className="px-4 py-3 w-1/4">Deadline</th>
+                <th className="px-4 py-3 w-1/4">Status</th>
+                <th className="px-4 py-3 w-1/4">Notes</th>
+              </tr>
+            </thead>
+          </table>
+
+          {/* Scrollable tbody wrapper */}
+          <div className="overflow-y-auto max-h-64">
+            <table className="min-w-full table-fixed">
+              <tbody className="text-gray-700 text-sm md:text-base">
+                {toDoList.map((item, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="px-4 py-3 w-10">{index + 1}</td>
+                    <td className="px-4 py-3 w-1/4">{item.descriptionItem}</td>
+                    <td className="px-4 py-3 w-1/4">{item.deadlineDate}</td>
+                    <td className="px-4 py-3 w-1/4 text-green-500 font-medium">
+                      {item.statusItem}
+                    </td>
+                    <td className="px-4 py-3 w-1/4 text-gray-400">
+                      {item.noteItem}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </>
   );
