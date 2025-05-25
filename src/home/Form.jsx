@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getDatabase, onValue, push, ref, set } from "firebase/database";
+import {
+  getDatabase,
+  onValue,
+  push,
+  ref,
+  remove,
+  set,
+  update,
+} from "firebase/database";
 import { FaRegCheckCircle, FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -11,6 +19,14 @@ const Form = () => {
   const [note, setNote] = useState("");
   const [toDoList, setToDoList] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [editId, setEditId] = useState(false);
+  const [editValue, setEditValue] = useState({
+    descriptionItem: "",
+    deadlineDate: "",
+    statusItem: "",
+    noteItem: "",
+    id: "",
+  });
 
   const handelSubmit = (e) => {
     e.preventDefault();
@@ -50,6 +66,56 @@ const Form = () => {
     setStatus("");
     setNote("");
   };
+  const handelEnableEdit = (item) => {
+    setEditValue(item);
+    setEditId(true);
+  };
+  const handelupdate = () => {
+    if (
+      window.confirm(
+        "তুমি কি নিশ্চিত যে তুমি এই কাজটা আপডেট করতে চাও? আরেকবার ভাবো!"
+      )
+    ) {
+      if (!editValue.descriptionItem) {
+      alert(
+        "ভাই, টাইটেল ছাড়া তোর প্ল্যানটা তো দেখছি Netflix এর টিজারের মত — শুধু আশা, কনটেন্ট নাই!"
+      );
+      return;
+    } else if (!editValue.deadlineDate) {
+      alert(
+        "ডেডলাইন ছাড়াই দিলে বাচ্চারা ভাববে এটা একটা কাল্পনিক প্রজেক্ট — শুরু আছে, শেষ নাই!"
+      );
+      return;
+    } else if (!editValue.statusItem) {
+      alert(
+        "স্ট্যাটাস দাও ভাই! না দিলে মনে হবে তুমি শুধু ভাবছো, কিছু করো নাই — ভাবা কিন্তু বিল্ডিং করে না!"
+      );
+      return;
+    } else if (!editValue.noteItem) {
+      alert("নোট দিলে কি বুঝি গোপন প্রেমটা ধরা পড়ে যাবে? এত গোপনীয়তা কেন ভাই?");
+      return;
+    } else {
+      alert(
+        "তুমি আপডেট করছো! এখন শুধু দোয়া করি — রিভিউয়ার যেন coffee break-এ থাকে!"
+      );
+    }
+    update(ref(db, "toDoList/" + editValue.id), {
+      descriptionItem: editValue.descriptionItem,
+      deadlineDate: editValue.deadlineDate,
+      statusItem: editValue.statusItem,
+      noteItem: editValue.noteItem,
+      editId: editValue.id,
+    });
+    setEditId(false);
+    }
+  };
+  const handelDelete = (item) => {
+    if (
+      window.confirm("তুমি কি সত্যিই এই কাজটা ডিলিট করতে চাও? আরেকবার ভাবো!")
+    ) {
+      remove(ref(db, "toDoList/" + item.id));
+      }
+  };
 
   useEffect(() => {
     onValue(ref(db, "toDoList/"), (snapshot) => {
@@ -63,7 +129,7 @@ const Form = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center pt-20 bg-white">
+      <div className="flex flex-col items-center justify-center pt-20">
         <div className="w-300 bg-white p-5 outline-1 outline-blue-400 rounded-2xl">
           <h2 className="flex items-center justify-center gap-4 font-inter text-4xl font-bold text-center ">
             <span className="text-green-400">
@@ -86,8 +152,15 @@ const Form = () => {
                   </p>
                   <input
                     type="text"
-                    onChange={(e) => setDescription(e.target.value)}
-                    value={description}
+                    onChange={(e) =>
+                      editValue
+                        ? setEditValue((prev) => ({
+                            ...prev,
+                            descriptionItem: e.target.value,
+                          }))
+                        : setDescription(e.target.value)
+                    }
+                    value={editId ? editValue.descriptionItem : description}
                     placeholder="Project Description"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -96,8 +169,15 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Deadline</p>
                   <input
                     type="date"
-                    onChange={(e) => setDeadline(e.target.value)}
-                    value={deadline}
+                    onChange={(e) =>
+                      editValue
+                        ? setEditValue((prev) => ({
+                            ...prev,
+                            deadlineDate: e.target.value,
+                          }))
+                        : setDeadline(e.target.value)
+                    }
+                    value={editId ? editValue.deadlineDate : deadline}
                     placeholder="Deadline"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -108,8 +188,15 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Status</p>
                   <select
                     id="task-status"
-                    onChange={(e) => setStatus(e.target.value)}
-                    value={status}
+                    onChange={(e) =>
+                      editValue
+                        ? setEditValue((prev) => ({
+                            ...prev,
+                            statusItem: e.target.value,
+                          }))
+                        : setStatus(e.target.value)
+                    }
+                    value={editId ? editValue.statusItem : status}
                     name="task-status"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
@@ -123,29 +210,55 @@ const Form = () => {
                   <p className="text-center font-semibold text-xl">Notes</p>
                   <input
                     type="text"
-                    onChange={(e) => setNote(e.target.value)}
-                    value={note}
+                    onChange={(e) =>
+                      editValue
+                        ? setEditValue((prev) => ({
+                            ...prev,
+                            noteItem: e.target.value,
+                          }))
+                        : setNote(e.target.value)
+                    }
+                    value={editId ? editValue.noteItem : note}
                     placeholder="Notes"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
-            >
-              Add
-            </button>
+            {editId ? (
+              <div className=" flex w-full items-center justify-between gap-10">
+                <button
+                  type="button"
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+                  onClick={handelupdate}
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => setEditId(false)}
+                  type="button"
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+                >
+                  Cancle
+                </button>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+              >
+                Add
+              </button>
+            )}
           </form>
           <div className=" flex items-center justify-center m-auto">
-        <button
-          onClick={() => setShowTable(!showTable)}
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
-        >
-          To-Do List
-        </button>
-      </div>
+            <button
+              onClick={() => setShowTable(!showTable)}
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+            >
+              {showTable ? "Hide To-Do List" : "To-Do List"}
+            </button>
+          </div>
         </div>
       </div>
       {/* table data  */}
@@ -171,7 +284,7 @@ const Form = () => {
               <table className="min-w-full table-fixed">
                 <tbody className="text-gray-700 text-sm md:text-base">
                   {toDoList.map((item, index) => (
-                    <tr key={index} className="border-t">
+                    <tr key={item.id} className="border-t">
                       <td className="px-4 py-3 w-10">{index + 1}</td>
                       <td className="px-4 py-3 w-1/4">
                         {item.descriptionItem}
@@ -184,10 +297,17 @@ const Form = () => {
                         {item.noteItem}
                       </td>
                       <td className="px-5.25 py-3 w-10 text-2xl text-gray-400">
-                        <FaRegEdit/>
+                        {/* <FaRegEdit onClick={() => handleEdit(item)} className="cursor-pointer" /> */}
+                        <FaRegEdit
+                          onClick={() => handelEnableEdit(item)}
+                          className="cursor-pointer"
+                        />
                       </td>
                       <td className="px-5.25 py-3 w-10 text-2xl text-gray-400">
-                        <MdDelete />
+                        <MdDelete
+                          onClick={() => handelDelete(item)}
+                          className="cursor-pointer"
+                        />
                       </td>
                     </tr>
                   ))}
