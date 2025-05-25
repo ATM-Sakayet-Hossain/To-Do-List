@@ -19,7 +19,7 @@ const Form = () => {
   const [note, setNote] = useState("");
   const [toDoList, setToDoList] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  const [editId, setEditId] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState({
     descriptionItem: "",
     deadlineDate: "",
@@ -68,7 +68,7 @@ const Form = () => {
   };
   const handelEnableEdit = (item) => {
     setEditValue(item);
-    setEditId(true);
+    setIsEdit(true);
   };
   const handelupdate = () => {
     if (
@@ -104,9 +104,9 @@ const Form = () => {
       deadlineDate: editValue.deadlineDate,
       statusItem: editValue.statusItem,
       noteItem: editValue.noteItem,
-      editId: editValue.id,
+      isEdit: editValue.id,
     });
-    setEditId(false);
+    setIsEdit(false);
     }
   };
   const handelDelete = (item) => {
@@ -129,8 +129,8 @@ const Form = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center pt-20">
-        <div className="w-300 bg-white p-5 outline-1 outline-blue-400 rounded-2xl">
+      <div className="flex flex-col items-center justify-center pt-20 ">
+        <div className="w-300 bg-[#ffffff7c] p-5 outline-1 outline-blue-400 rounded-2xl">
           <h2 className="flex items-center justify-center gap-4 font-inter text-4xl font-bold text-center ">
             <span className="text-green-400">
               <FaRegCheckCircle />
@@ -153,14 +153,14 @@ const Form = () => {
                   <input
                     type="text"
                     onChange={(e) =>
-                      editValue
+                      isEdit
                         ? setEditValue((prev) => ({
                             ...prev,
                             descriptionItem: e.target.value,
                           }))
                         : setDescription(e.target.value)
                     }
-                    value={editId ? editValue.descriptionItem : description}
+                    value={isEdit ? editValue.descriptionItem : description}
                     placeholder="Project Description"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -170,14 +170,14 @@ const Form = () => {
                   <input
                     type="date"
                     onChange={(e) =>
-                      editValue
+                      isEdit
                         ? setEditValue((prev) => ({
                             ...prev,
                             deadlineDate: e.target.value,
                           }))
                         : setDeadline(e.target.value)
                     }
-                    value={editId ? editValue.deadlineDate : deadline}
+                    value={isEdit ? editValue.deadlineDate : deadline}
                     placeholder="Deadline"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
@@ -189,14 +189,14 @@ const Form = () => {
                   <select
                     id="task-status"
                     onChange={(e) =>
-                      editValue
+                      isEdit
                         ? setEditValue((prev) => ({
                             ...prev,
                             statusItem: e.target.value,
                           }))
                         : setStatus(e.target.value)
                     }
-                    value={editId ? editValue.statusItem : status}
+                    value={isEdit ? editValue.statusItem : status}
                     name="task-status"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
@@ -211,21 +211,21 @@ const Form = () => {
                   <input
                     type="text"
                     onChange={(e) =>
-                      editValue
+                      isEdit
                         ? setEditValue((prev) => ({
                             ...prev,
                             noteItem: e.target.value,
                           }))
                         : setNote(e.target.value)
                     }
-                    value={editId ? editValue.noteItem : note}
+                    value={isEdit ? editValue.noteItem : note}
                     placeholder="Notes"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
             </div>
-            {editId ? (
+            {isEdit ? (
               <div className=" flex w-full items-center justify-between gap-10">
                 <button
                   type="button"
@@ -235,7 +235,7 @@ const Form = () => {
                   Update
                 </button>
                 <button
-                  onClick={() => setEditId(false)}
+                  onClick={() => setIsEdit(false)}
                   type="button"
                   className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
                 >
