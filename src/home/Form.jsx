@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
-import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCheckCircle, FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 const Form = () => {
   const db = getDatabase();
@@ -9,6 +10,7 @@ const Form = () => {
   const [status, setStatus] = useState("");
   const [note, setNote] = useState("");
   const [toDoList, setToDoList] = useState([]);
+  const [showTable, setShowTable] = useState(false);
 
   const handelSubmit = (e) => {
     e.preventDefault();
@@ -72,7 +74,10 @@ const Form = () => {
           <p className="text-center text-gray-500 mt-2">
             Keep track of your tasks and stay organized!
           </p>
-          <form onSubmit={handelSubmit} className="flex flex-col items-center justify-center mt-5">
+          <form
+            onSubmit={handelSubmit}
+            className="flex flex-col items-center justify-center mt-5"
+          >
             <div className="w-full flex flex-col gap-4">
               <div className="w-full flex items-center justify-between gap-4">
                 <div className="w-1/2">
@@ -133,50 +138,65 @@ const Form = () => {
               Add
             </button>
           </form>
+          <div className=" flex items-center justify-center m-auto">
+        <button
+          onClick={() => setShowTable(!showTable)}
+          className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mt-3"
+        >
+          To-Do List
+        </button>
+      </div>
         </div>
       </div>
       {/* table data  */}
-      <div className="flex items-center justify-center pt-10">
-        <button className="text-2xl font-bold text-blue-300 mb-4">
-          Your To-Do List
-        </button>
-      </div>
-      <div className="w-300 bg-white mt-5 m-auto">
-        <div className="overflow-x-auto rounded-2xl outline-1 outline-blue-400">
-          <table className="min-w-full table-fixed">
-            <thead className="bg-gray-100 text-gray-600 text-left text-base font-semibold sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-3 w-10">#</th>
-                <th className="px-4 py-3 w-1/4">Project Description</th>
-                <th className="px-4 py-3 w-1/4">Deadline</th>
-                <th className="px-4 py-3 w-1/4">Status</th>
-                <th className="px-4 py-3 w-1/4">Notes</th>
-              </tr>
-            </thead>
-          </table>
-
-          {/* Scrollable tbody wrapper */}
-          <div className="overflow-y-auto max-h-64">
+      {showTable && (
+        <div className="w-300 bg-white mt-5 m-auto">
+          <div className="overflow-x-auto rounded-2xl outline-1 outline-blue-400">
             <table className="min-w-full table-fixed">
-              <tbody className="text-gray-700 text-sm md:text-base">
-                {toDoList.map((item, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="px-4 py-3 w-10">{index + 1}</td>
-                    <td className="px-4 py-3 w-1/4">{item.descriptionItem}</td>
-                    <td className="px-4 py-3 w-1/4">{item.deadlineDate}</td>
-                    <td className="px-4 py-3 w-1/4 text-green-500 font-medium">
-                      {item.statusItem}
-                    </td>
-                    <td className="px-4 py-3 w-1/4 text-gray-400">
-                      {item.noteItem}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              <thead className="bg-gray-100 text-gray-600 text-left text-base font-semibold sticky top-0 z-10">
+                <tr>
+                  <th className="px-4 py-3 w-10">#</th>
+                  <th className="px-4 py-3 w-1/4">Project Description</th>
+                  <th className="px-4 py-3 w-1/4">Deadline</th>
+                  <th className="px-4 py-3 w-1/4">Status</th>
+                  <th className="px-4 py-3 w-1/4">Notes</th>
+                  <th className="px-4 py-3 w-10">Edit</th>
+                  <th className="px-4 py-3 w-10">Delete</th>
+                </tr>
+              </thead>
             </table>
+
+            {/* Scrollable tbody wrapper */}
+            <div className="overflow-y-auto max-h-64">
+              <table className="min-w-full table-fixed">
+                <tbody className="text-gray-700 text-sm md:text-base">
+                  {toDoList.map((item, index) => (
+                    <tr key={index} className="border-t">
+                      <td className="px-4 py-3 w-10">{index + 1}</td>
+                      <td className="px-4 py-3 w-1/4">
+                        {item.descriptionItem}
+                      </td>
+                      <td className="px-4 py-3 w-1/4">{item.deadlineDate}</td>
+                      <td className="px-4 py-3 w-1/4 text-green-500 font-medium">
+                        {item.statusItem}
+                      </td>
+                      <td className="px-4 py-3 w-1/4 text-gray-400">
+                        {item.noteItem}
+                      </td>
+                      <td className="px-5.25 py-3 w-10 text-2xl text-gray-400">
+                        <FaRegEdit/>
+                      </td>
+                      <td className="px-5.25 py-3 w-10 text-2xl text-gray-400">
+                        <MdDelete />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
