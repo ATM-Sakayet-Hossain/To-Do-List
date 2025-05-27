@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
+  Dialog,
+  DialogPanel,
+} from "@headlessui/react";
+import {
   getDatabase,
   onValue,
   push,
@@ -20,6 +24,7 @@ const Form = () => {
   const [toDoList, setToDoList] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editValue, setEditValue] = useState({
     descriptionItem: "",
     deadlineDate: "",
@@ -31,14 +36,16 @@ const Form = () => {
   const handelSubmit = (e) => {
     e.preventDefault();
     if (!description) {
-      alert(
-        "তুমি শুধু টাইটেল দাও, বাকি গল্পটা কোথায়? এমন করলে তো কাজের বায়োডাটা নয়, ইনস্টাগ্রাম ক্যাপশন মনে হয়!"
-      );
+      setIsOpen(true);
+      // alert(
+      //   "তুমি শুধু টাইটেল দাও, বাকি গল্পটা কোথায়? এমন করলে তো কাজের বায়োডাটা নয়, ইনস্টাগ্রাম ক্যাপশন মনে হয়!"
+      // );
       return;
     } else if (!deadline) {
-      alert(
-        "ভাই, ডেডলাইন ছাড়া টাস্ক মানে প্রেমের প্রমিস — আজ না কাল, কাল না পরশু!"
-      );
+      setIsOpen(true);
+      // alert(
+      //   "ভাই, ডেডলাইন ছাড়া টাস্ক মানে প্রেমের প্রমিস — আজ না কাল, কাল না পরশু!"
+      // );
       return;
     } else if (!status) {
       alert(
@@ -77,44 +84,46 @@ const Form = () => {
       )
     ) {
       if (!editValue.descriptionItem) {
-      alert(
-        "ভাই, টাইটেল ছাড়া তোর প্ল্যানটা তো দেখছি Netflix এর টিজারের মত — শুধু আশা, কনটেন্ট নাই!"
-      );
-      return;
-    } else if (!editValue.deadlineDate) {
-      alert(
-        "ডেডলাইন ছাড়াই দিলে বাচ্চারা ভাববে এটা একটা কাল্পনিক প্রজেক্ট — শুরু আছে, শেষ নাই!"
-      );
-      return;
-    } else if (!editValue.statusItem) {
-      alert(
-        "স্ট্যাটাস দাও ভাই! না দিলে মনে হবে তুমি শুধু ভাবছো, কিছু করো নাই — ভাবা কিন্তু বিল্ডিং করে না!"
-      );
-      return;
-    } else if (!editValue.noteItem) {
-      alert("নোট দিলে কি বুঝি গোপন প্রেমটা ধরা পড়ে যাবে? এত গোপনীয়তা কেন ভাই?");
-      return;
-    } else {
-      alert(
-        "তুমি আপডেট করছো! এখন শুধু দোয়া করি — রিভিউয়ার যেন coffee break-এ থাকে!"
-      );
-    }
-    update(ref(db, "toDoList/" + editValue.id), {
-      descriptionItem: editValue.descriptionItem,
-      deadlineDate: editValue.deadlineDate,
-      statusItem: editValue.statusItem,
-      noteItem: editValue.noteItem,
-      isEdit: editValue.id,
-    });
-    setIsEdit(false);
+        alert(
+          "ভাই, টাইটেল ছাড়া তোর প্ল্যানটা তো দেখছি Netflix এর টিজারের মত — শুধু আশা, কনটেন্ট নাই!"
+        );
+        return;
+      } else if (!editValue.deadlineDate) {
+        alert(
+          "ডেডলাইন ছাড়াই দিলে বাচ্চারা ভাববে এটা একটা কাল্পনিক প্রজেক্ট — শুরু আছে, শেষ নাই!"
+        );
+        return;
+      } else if (!editValue.statusItem) {
+        alert(
+          "স্ট্যাটাস দাও ভাই! না দিলে মনে হবে তুমি শুধু ভাবছো, কিছু করো নাই — ভাবা কিন্তু বিল্ডিং করে না!"
+        );
+        return;
+      } else if (!editValue.noteItem) {
+        alert(
+          "নোট দিলে কি বুঝি গোপন প্রেমটা ধরা পড়ে যাবে? এত গোপনীয়তা কেন ভাই?"
+        );
+        return;
+      } else {
+        alert(
+          "তুমি আপডেট করছো! এখন শুধু দোয়া করি — রিভিউয়ার যেন coffee break-এ থাকে!"
+        );
+      }
+      update(ref(db, "toDoList/" + editValue.id), {
+        descriptionItem: editValue.descriptionItem,
+        deadlineDate: editValue.deadlineDate,
+        statusItem: editValue.statusItem,
+        noteItem: editValue.noteItem,
+        isEdit: editValue.id,
+      });
+      setIsEdit(false);
     }
   };
   const handelDelete = (item) => {
     if (
-      window.confirm("তুমি কি সত্যিই এই কাজটা ডিলিট করতে চাও? আরেকবার ভাবো!")
+      setIsOpen.window.confirm("তুমি কি সত্যিই এই কাজটা ডিলিট করতে চাও? আরেকবার ভাবো!")
     ) {
       remove(ref(db, "toDoList/" + item.id));
-      }
+    }
   };
 
   useEffect(() => {
@@ -129,6 +138,25 @@ const Form = () => {
 
   return (
     <>
+      <div>
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          className="relative z-50"
+        >
+          <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+            <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+              <p>
+                তুমি শুধু টাইটেল দাও, বাকি গল্পটা কোথায়? এমন করলে তো কাজের বায়োডাটা নয়, ইনস্টাগ্রাম ক্যাপশন মনে হয়!
+              </p>
+              <div className="flex gap-4">
+                <button onClick={() => setIsOpen(false)}>Cancel</button>
+                <button onClick={() => setIsOpen(false)}>Okay</button>
+              </div>
+            </DialogPanel>
+          </div>
+        </Dialog>
+      </div>
       <div className="flex flex-col items-center justify-center pt-20 ">
         <div className="w-300 bg-[#ffffff7c] p-5 outline-1 outline-blue-400 rounded-2xl">
           <h2 className="flex items-center justify-center gap-4 font-inter text-4xl font-bold text-center ">
